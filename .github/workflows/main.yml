@@ -27,4 +27,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/morphingi_home_admin_backend:latest
+        tags: elan3050/morphingi_home_admin_backend:latest
