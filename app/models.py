@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime
-from database import Base
+from sqlalchemy import Column, Integer, String, DateTime, JSON
+from app.database import Base
 
 class Admin(Base):
     __tablename__ = "admins"
@@ -19,10 +19,8 @@ class News(Base):
     __tablename__ = "news"
 
     id = Column(Integer, primary_key=True, index=True)
-    news_title = Column(String)
-    create_user = Column(String)
+    newsRequestKoDto = Column(JSON)
+    newsRequestEnDto = Column(JSON)
+    status = Column(String)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
-    status = Column(String)
-    contents = Column(String)
-    image_url = Column(String)
