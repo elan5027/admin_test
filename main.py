@@ -7,13 +7,14 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
-from app.models import Base
+
 from app.schemas import AdminCreate, Admin, NewsCreate, News, AdminLogin, NewsUpdate, PresignedUrlResponse
 from app.crud import create_admin, authenticate_admin, create_news, get_news, get_news_by_id, get_admins, get_admin_by_id, update_news, get_all_news
 from app.dependencies import get_db
-from app.database import engine
+from app.core.sqlalchemy import SQLAlchemyMiddleware
 from typing import List
 from app.auth import create_access_token, verify_token, oauth2_scheme
+
 
 import uvicorn
 import boto3
@@ -22,14 +23,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 app = FastAPI()
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    SQLAlchemyMiddleware,
 )
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 s3_client = boto3.client(
     "s3",
@@ -118,6 +115,3 @@ def get_presigned_url(object_name: str, db: Session = Depends(get_db), token: st
     bucket_name = os.getenv("AWS_S3_BUCKET")
     url = create_presigned_url(bucket_name, object_name)
     return {"url": url}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

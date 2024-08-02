@@ -1,8 +1,8 @@
 from typing import Generator
-from app.database import SessionLocal
+from app.database import session
 
 def get_db() -> Generator:
-    db = SessionLocal()
+    db = session()
     try:
         yield db
     finally:
